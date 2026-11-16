@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="console-application">
+  <id>cz.vitexsoftware.mcp-server-cnb-cache</id>
+  <name>CNB Cache MCP Server</name>
+  <summary>Czech National Bank exchange rates and conversions from a cnb-cache instance</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <developer id="cz.vitexsoftware"><name>VitexSoftware</name></developer>
+  <description>
+    <p>Model Context Protocol server exposing CNB daily exchange rates, conversions and rate history, read from a cnb-cache instance, to AI assistants.</p>
+  </description>
+  <url type="homepage">https://github.com/Spoje-NET/mcp-server-cnb-cache</url>
+  <url type="vcs-browser">https://github.com/Spoje-NET/mcp-server-cnb-cache</url>
+  <url type="bugtracker">https://github.com/Spoje-NET/mcp-server-cnb-cache/issues</url>
+  <content_rating type="oars-1.1"/>
+  <provides><binary>mcp-server-cnb-cache</binary></provides>
+  <releases><release version="0.1.0" date="2026-11-16"/></releases>
+</component>

@@ -1,0 +1,32 @@
+Source: mcp-server-cnb-cache
+Section: python
+Priority: optional
+Maintainer: Vítězslav Dvořák <info@vitexsoftware.cz>
+Build-Depends: debhelper-compat (= 13), dh-python, pybuild-plugin-pyproject, python3-all, python3-setuptools
+Standards-Version: 4.6.2
+Homepage: https://github.com/Spoje-NET/mcp-server-cnb-cache
+Vcs-Git: https://github.com/Spoje-NET/mcp-server-cnb-cache.git
+Vcs-Browser: https://github.com/Spoje-NET/mcp-server-cnb-cache
+
+Package: mcp-server-cnb-cache
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends},
+ python3-fastmcp (>= 4.1.4),
+ python3-mcp,
+ python3-httpx,
+ python3-pydantic (>= 2),
+Suggests: cnb-cache-mysql | cnb-cache-sqlite
+Description: MCP server for Czech National Bank exchange rates
+ Model Context Protocol (MCP) server that exposes CNB daily exchange rates,
+ conversions and history, obtained from a cnb-cache instance over HTTP, as
+ tools for AI agents such as Claude Desktop and Claude Code.
+
+Package: mcprack-mcp-server-cnb-cache
+Architecture: all
+Depends: ${misc:Depends},
+ mcprack (>= 1.6.0),
+ mcp-server-cnb-cache (= ${binary:Version}),
+Description: Registers CNB Cache MCP server into mcprack catalog
+ Companion package for mcp-server-cnb-cache. Installing it registers
+ the mcp-server-cnb-cache binary as an available MCP server in the local
+ mcprack instance; removing it unregisters it again.

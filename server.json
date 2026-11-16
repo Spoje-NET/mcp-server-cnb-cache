@@ -1,0 +1,218 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.vitexsoftware/mcp-server-cnb-cache",
+  "title": "CNB Cache MCP Server",
+  "description": "Czech National Bank exchange rates and conversions from a cnb-cache instance.",
+  "version": "0.1.0",
+  "websiteUrl": "https://github.com/Spoje-NET/mcp-server-cnb-cache",
+  "repository": {
+    "url": "https://github.com/Spoje-NET/mcp-server-cnb-cache",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "mcp-server-cnb-cache",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "CNB_CACHE_URL",
+          "description": "Base URL of the cnb-cache web interface",
+          "default": "http://localhost/cnb-cache/"
+        },
+        {
+          "name": "CNB_CACHE_TIMEOUT",
+          "description": "Request timeout in seconds",
+          "default": "10"
+        },
+        {
+          "name": "CNB_CACHE_TRANSPORT",
+          "description": "MCP transport",
+          "default": "stdio"
+        },
+        {
+          "name": "CNB_CACHE_READ_ONLY",
+          "description": "Accepted for uniformity; all tools are read-only",
+          "default": "true"
+        }
+      ]
+    }
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/publisher-provided": {
+      "cz.vitexsoftware.mcp": {
+        "uuid": "4f0a3aad-9e0c-4a92-9c84-6bb2f881a67a",
+        "author": {
+          "name": "Vítězslav Dvořák",
+          "url": "https://github.com/VitexSoftware"
+        },
+        "tools": [
+          {
+            "name": "get_rate",
+            "description": "Get the CNB exchange rate (CZK per `amount` units) of one currency for a given day.",
+            "title": "Get Exchange Rate",
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": true,
+              "openWorldHint": true,
+              "readOnlyHint": true
+            },
+            "inputSchema": {
+              "properties": {
+                "currency": {
+                  "description": "ISO 4217 code, e.g. EUR, USD",
+                  "maxLength": 3,
+                  "minLength": 3,
+                  "type": "string"
+                },
+                "date": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "description": "Day as YYYY-MM-DD (default: today)"
+                },
+                "age": {
+                  "anyOf": [
+                    {
+                      "maximum": 3650,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "description": "Days back from today; ignored if date is given"
+                }
+              },
+              "required": [
+                "currency"
+              ],
+              "type": "object",
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "list_currencies",
+            "description": "List the currency codes that the cnb-cache instance keeps.",
+            "title": "List Cached Currencies",
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": true,
+              "openWorldHint": true,
+              "readOnlyHint": true
+            },
+            "inputSchema": {
+              "properties": {},
+              "type": "object",
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "convert_amount",
+            "description": "Convert an amount between CZK and a foreign currency (or two foreign currencies via CZK) using CNB rates of a given day.",
+            "title": "Convert Amount",
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": true,
+              "openWorldHint": true,
+              "readOnlyHint": true
+            },
+            "inputSchema": {
+              "properties": {
+                "amount": {
+                  "description": "Amount in the source currency",
+                  "type": "number"
+                },
+                "from_currency": {
+                  "description": "Source code, e.g. CZK, EUR",
+                  "maxLength": 3,
+                  "minLength": 3,
+                  "type": "string"
+                },
+                "to_currency": {
+                  "description": "Target code, e.g. CZK, EUR",
+                  "maxLength": 3,
+                  "minLength": 3,
+                  "type": "string"
+                },
+                "date": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "description": "Day as YYYY-MM-DD (default: today)"
+                }
+              },
+              "required": [
+                "amount",
+                "from_currency",
+                "to_currency"
+              ],
+              "type": "object",
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "get_rate_history",
+            "description": "Get daily CNB rates of one currency over a date range (max 31 days). Days without a published rate are skipped.",
+            "title": "Get Rate History",
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": true,
+              "openWorldHint": true,
+              "readOnlyHint": true
+            },
+            "inputSchema": {
+              "properties": {
+                "currency": {
+                  "description": "ISO 4217 code, e.g. EUR",
+                  "maxLength": 3,
+                  "minLength": 3,
+                  "type": "string"
+                },
+                "from_date": {
+                  "description": "First day, YYYY-MM-DD",
+                  "type": "string"
+                },
+                "to_date": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "description": "Last day, YYYY-MM-DD (default: today)"
+                }
+              },
+              "required": [
+                "currency",
+                "from_date"
+              ],
+              "type": "object",
+              "additionalProperties": false
+            }
+          }
+        ]
+      }
+    }
+  }
+}

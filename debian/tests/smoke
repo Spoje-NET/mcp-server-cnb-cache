@@ -1,0 +1,4 @@
+#!/bin/sh
+# DEP-8 smoke test: spawn the installed server, do the MCP handshake and list tools.
+set -e
+mcprack server probe /usr/bin/mcp-server-cnb-cache --set-env CNB_CACHE_READ_ONLY=true

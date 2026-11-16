@@ -1,0 +1,13 @@
+__pycache__/
+*.egg-info/
+build/
+.pytest_cache/
+.pybuild/
+debian/.debhelper/
+debian/*.substvars
+debian/*.debhelper.log
+debian/files
+debian/debhelper-build-stamp
+debian/mcp-server-cnb-cache/
+debian/mcprack-mcp-server-cnb-cache/
+debian/*.debhelper

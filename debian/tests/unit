@@ -1,0 +1,4 @@
+#!/bin/sh
+# autopkgtest runs from the source tree root
+set -e
+python3 -m pytest -q -p no:cacheprovider tests

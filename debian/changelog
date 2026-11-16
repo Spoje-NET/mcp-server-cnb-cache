@@ -1,0 +1,6 @@
+mcp-server-cnb-cache (0.1.0) trixie; urgency=low
+
+  * Initial release: get_rate, list_currencies, convert_amount,
+    get_rate_history backed by a cnb-cache instance.
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Mon, 16 Nov 2026 12:00:00 +0100
