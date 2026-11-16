@@ -52,6 +52,25 @@ async def test_get_rate():
     assert (await call("get_rate", {"currency": "usd"}))["rate"] == 24.0
 
 
+async def test_list_currencies_json_endpoint(monkeypatch):
+    def h(request):
+        assert "currencies" in request.url.params
+        return httpx.Response(200, json={"currencies": ["eur", "USD"], "keep_days": 3})
+
+    monkeypatch.setattr(server, "_client", client_mod.CnbCacheClient("http://cnb.test/", transport=httpx.MockTransport(h)))
+    assert await call("list_currencies") == ["EUR", "USD"]
+
+
+async def test_error_redacts_credentials(monkeypatch):
+    def boom(request):
+        raise httpx.ConnectError("x")
+
+    monkeypatch.setattr(server, "_client", client_mod.CnbCacheClient("http://user:pw@cnb.test/a?token=s", transport=httpx.MockTransport(boom)))
+    with pytest.raises(Exception) as e:
+        await call("get_rate", {"currency": "USD"})
+    assert "pw" not in str(e.value) and "token" not in str(e.value) and "cnb.test" in str(e.value)
+
+
 async def test_list_currencies():
     assert await call("list_currencies") == ["JPY", "USD"]
 

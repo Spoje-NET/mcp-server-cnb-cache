@@ -29,6 +29,15 @@ def normalize_base_url(url: str) -> str:
     return url if url.endswith("/") else url + "/"
 
 
+def redact_url(url: str) -> str:
+    """Drop userinfo and query so credentials never reach error messages."""
+    p = urlparse(url)
+    host = p.hostname or ""
+    if p.port:
+        host += f":{p.port}"
+    return f"{p.scheme}://{host}{p.path}"
+
+
 def validate_code(code: str) -> str:
     code = (code or "").strip().upper()
     if not _CODE_RE.match(code):
@@ -55,7 +64,7 @@ class CnbCacheClient:
                 r = c.get(self.base_url, params=params)
         except httpx.HTTPError as exc:
             raise CnbCacheError(
-                f"cnb-cache at {self.base_url} is unreachable ({type(exc).__name__}); "
+                f"cnb-cache at {redact_url(self.base_url)} is unreachable ({type(exc).__name__}); "
                 "check CNB_CACHE_URL"
             ) from None
         if len(r.content) > MAX_RESPONSE_BYTES:
@@ -92,7 +101,15 @@ class CnbCacheClient:
         return data
 
     def currencies(self) -> list[str]:
-        """The index page (HTTP 404 by design) lists cached currency codes."""
+        """Cached currency codes: JSON ``?currencies`` (newer cnb-cache), else parse the HTML index."""
+        r = self._get({"currencies": ""})
+        if r.status_code == 200:
+            try:
+                data = r.json()
+                if isinstance(data, dict) and isinstance(data.get("currencies"), list):
+                    return sorted(str(c).upper() for c in data["currencies"])
+            except ValueError:
+                pass
         r = self._get({})
         codes = re.findall(r"\?currency=([A-Za-z]{3})\"", html.unescape(r.text))
         return sorted(dict.fromkeys(c.upper() for c in codes))
